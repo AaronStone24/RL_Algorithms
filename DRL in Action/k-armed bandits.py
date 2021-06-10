@@ -48,4 +48,5 @@ for i in range(500):
     record = update_record(record, reward, choice)
     rewards.append(rewards[-1] + (reward - rewards[-1])/(i+2))
 ax.scatter(np.arange(len(rewards)), rewards, alpha=0.75)
+#show the plot
 plt.show()
