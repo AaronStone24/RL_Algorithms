@@ -35,7 +35,7 @@ class ContextualBandit:
         return reward
 
 #The Agent
-writer = SummaryWriter()
+writer = SummaryWriter("runs/Contextual Bandits")
 arms = 10
 N = 1          #Batch Size
 D_in = arms    #Input Dimension
