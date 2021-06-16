@@ -1,7 +1,7 @@
 import numpy as np
 import random
 import torch
-import matplotlib.pyplot as plt
+from torch.utils.tensorboard import SummaryWriter
 
 #The Environment
 class ContextualBandit:
@@ -35,6 +35,7 @@ class ContextualBandit:
         return reward
 
 #The Agent
+writer = SummaryWriter()
 arms = 10
 N = 1          #Batch Size
 D_in = arms    #Input Dimension
@@ -80,6 +81,7 @@ def train(env, epochs=5000, learning_rate=1e-2):
         loss.backward()
         optimizer.step()
         current_state = torch.Tensor(one_hot_encode(arms, env.get_state()))
+        writer.add_scalar('Rewards', current_reward, i)
     return np.array(rewards)
 
 def running_mean(x,N):
@@ -88,9 +90,9 @@ def running_mean(x,N):
     conv  = np.ones(N)
     for i in range(c):
         y[i] = (x[i:i+N] @ conv)/N
+        writer.add_scalar('Mean Rewards', y[i], i)
     return y
 
 rewards = train(env)
 print("Training Complete!!")
-plt.plot(running_mean(rewards,500))
-plt.show()
+running_mean(rewards, 500)
