@@ -1,4 +1,4 @@
-from DRL_in_Action import GridBoard
+from GridBoard import *
 
 class GridWorld:
     def __init__(self, size=4, mode='static'):
@@ -39,7 +39,7 @@ class GridWorld:
 
         all_pieces = [piece for name,piece in self.board.components.items()]
         all_positions = [player.pos, goal.pos, wall.pos, pit.pos]
-        if len(all_pieces) > len(set(all_pieces)):
+        if len(all_positions) > len(set(all_positions)):
             return False
 
         corners = [(0,0), (0,self.board.size), (self.board.size,0), (self.board.size,self.board.size)]
@@ -54,16 +54,16 @@ class GridWorld:
 
     def initGridPlayer(self):
         self.initGridStatic()
-        self.board.components['Player'].pos = GridBoard.randPair(0,self.board.size)
+        self.board.components['Player'].pos = randPair(0,self.board.size)
 
         if not self.validateBoard():
             self.initGridPlayer()
     
     def initGridRand(self):
-        self.board.components['Player'].pos = GridBoard.randPair(0,self.board.size)
-        self.board.components['Goal'].pos = GridBoard.randPair(0,self.board.size)
-        self.board.components['Pit'].pos = GridBoard.randPair(0,self.board.size)
-        self.board.components['Wall'].pos = GridBoard.randPair(0,self.board.size)
+        self.board.components['Player'].pos = randPair(0,self.board.size)
+        self.board.components['Goal'].pos = randPair(0,self.board.size)
+        self.board.components['Pit'].pos = randPair(0,self.board.size)
+        self.board.components['Wall'].pos = randPair(0,self.board.size)
 
         if not self.validateBoard():
             self.initGridRand()
@@ -72,7 +72,7 @@ class GridWorld:
         outcome = 0     #0 for valid, 1 invalid, 2 lost game
         pit = self.board.components['Pit'].pos
         wall = self.board.components['Wall'].pos
-        new_pos = GridBoard.addTuple(self.board.components[piece].pos, addpos)
+        new_pos = addTuple(self.board.components[piece].pos, addpos)
         
         if new_pos == wall:
             outcome = 1
@@ -88,7 +88,7 @@ class GridWorld:
     def makeMove(self, action):
         def checkMove(addpos):
             if self.validateMove('Player', addpos) in [0,2]:
-                new_pos = GridBoard.addTuple(self.board.components['Player'].pos, addpos)
+                new_pos = addTuple(self.board.components['Player'].pos, addpos)
                 self.board.movePiece('Player', new_pos)
         
         if action == 'u':

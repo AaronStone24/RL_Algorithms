@@ -41,7 +41,7 @@ class GridBoard:
 
     def movePiece(self, name, pos):
         move = True
-        for _, mask in self.mask.items():
+        for _, mask in self.masks.items():
             if pos in zip_positions2d(mask.get_positions()):
                 move = False
         if move:
