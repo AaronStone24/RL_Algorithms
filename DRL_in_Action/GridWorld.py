@@ -2,6 +2,8 @@ from GridBoard import *
 
 class GridWorld:
     def __init__(self, size=4, mode='static'):
+        self.numMoves = 0
+        self.playerLastPos = (0,0)
         if size>=4:
             self.board = GridBoard(size=size)
         else:
@@ -42,7 +44,7 @@ class GridWorld:
         if len(all_positions) > len(set(all_positions)):
             return False
 
-        corners = [(0,0), (0,self.board.size), (self.board.size,0), (self.board.size,self.board.size)]
+        corners = [(0,0), (0,self.board.size-1), (self.board.size-1,0), (self.board.size-1,self.board.size-1)]
         
         if player.pos in corners or goal.pos in corners:
             val_move_pl = [self.validateMove('Player', addpos) for addpos in [(0,1),(1,0),(-1,0),(0,-1)]]
@@ -89,16 +91,21 @@ class GridWorld:
         def checkMove(addpos):
             if self.validateMove('Player', addpos) in [0,2]:
                 new_pos = addTuple(self.board.components['Player'].pos, addpos)
+                self.playerLastPos = self.board.components['Player'].pos
                 self.board.movePiece('Player', new_pos)
+                self.numMoves += 1
+                return 0    #A move was successfully made
+            else:
+                return 1    #A move wasn't made
         
         if action == 'u':
-            checkMove((-1,0))
+            return checkMove((-1,0))
         elif action == 'd':
-            checkMove((1,0))
+            return checkMove((1,0))
         elif action == 'l':
-            checkMove((0,-1))
+            return checkMove((0,-1))
         elif action == 'r':
-            checkMove((0,1))
+            return checkMove((0,1))
         else:
             pass
 
@@ -107,6 +114,10 @@ class GridWorld:
             return -10
         elif self.board.components['Player'].pos == self.board.components['Goal'].pos:
             return 10
+        # elif self.numMoves > 10:
+        #     return -10
+        elif self.board.components['Player'].pos == self.playerLastPos:
+            return -2
         else:
             return -1
     

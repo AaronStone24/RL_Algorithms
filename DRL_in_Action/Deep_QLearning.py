@@ -30,10 +30,10 @@ action_set = {
     3: 'r'
 }
 
-epochs = 5000
+epochs = 2000
 losses = []
 for i in range(epochs):
-    game = GridWorld(size=4, mode='static')
+    game = GridWorld(size=4, mode='rand')
     state_ = game.board.render_np().reshape(1,64) + np.random.rand(1,64)/10.0
     state1 = torch.from_numpy(state_).float()
     status = 1
@@ -44,6 +44,7 @@ for i in range(epochs):
             action_ = np.random.randint(0,4)
         else:
             action_ = np.argmax(qval_)
+        
         action = action_set[action_]
         game.makeMove(action)
         state2_ = game.board.render_np().reshape(1,64) + np.random.rand(1,64)/10.0
@@ -61,7 +62,7 @@ for i in range(epochs):
         #print(qval.squeeze().shape)
         loss = loss_fn(X, Y)
         optimizer.zero_grad()
-        loss.backward(loss)
+        loss.backward()
         losses.append(loss.item())
         writer.add_scalar('Loss', loss.item(), len(losses)-1)
         optimizer.step()
